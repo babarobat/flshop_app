@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:shop_app/ext/build_context_extensions.dart';
 import 'package:shop_app/providers/products.dart';
 import 'package:shop_app/views/widget/product_item.dart';
 
@@ -8,7 +8,7 @@ class ProductsGreed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final products = Provider.of<Products>(context).items;
+    final products = context.getProvided<Products>().items;
     return GridView.builder(
       itemCount: products.length,
       padding: const EdgeInsets.all(10),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/constants/routs.dart';
+import 'package:shop_app/views/screen/product_detail_screen_dto.dart';
 
 class ProductItem extends StatelessWidget {
   final String id;
@@ -15,7 +16,11 @@ class ProductItem extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GestureDetector(
-        onTap:() => Navigator.pushNamed(context, Routs.productDetail),
+        onTap: () => Navigator.pushNamed(
+          context,
+          Routs.productDetail,
+          arguments: ProductDetailScreenDTO(id),
+        ),
         child: GridTile(
           child: Image.network(
             imageUrl,
