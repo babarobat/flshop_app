@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/constants/routs.dart';
 
 class ProductItem extends StatelessWidget {
   final String id;
@@ -13,26 +14,29 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
-      child: GridTile(
-        child: Image.network(
-          imageUrl,
-          fit: BoxFit.cover,
-        ),
-        footer: GridTileBar(
-          backgroundColor: Colors.black87,
-          leading: IconButton(
-            icon: Icon(Icons.favorite),
-            onPressed: () {},
-            color: Theme.of(context).colorScheme.secondary,
+      child: GestureDetector(
+        onTap:() => Navigator.pushNamed(context, Routs.productDetail),
+        child: GridTile(
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.cover,
           ),
-          title: Text(
-            title,
-            textAlign: TextAlign.center,
-          ),
-          trailing: IconButton(
-            icon: Icon(Icons.shopping_cart),
-            onPressed: () {},
-            color: Theme.of(context).colorScheme.secondary,
+          footer: GridTileBar(
+            backgroundColor: Colors.black87,
+            leading: IconButton(
+              icon: Icon(Icons.favorite),
+              onPressed: () {},
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+            title: Text(
+              title,
+              textAlign: TextAlign.center,
+            ),
+            trailing: IconButton(
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () {},
+              color: Theme.of(context).colorScheme.secondary,
+            ),
           ),
         ),
       ),
