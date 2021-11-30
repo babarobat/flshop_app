@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop_app/providers/cart.dart';
 import 'package:shop_app/views/widget/products_greed.dart';
+import 'package:shop_app/views/widget/badge.dart';
 
 class ProductsOverviewScreen extends StatefulWidget {
-
-  ProductsOverviewScreen({Key? key}) : super(key: key);
+  const ProductsOverviewScreen({Key? key}) : super(key: key);
 
   @override
   State<ProductsOverviewScreen> createState() => _ProductsOverviewScreenState();
@@ -35,10 +37,20 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
               ),
             ],
           ),
+          Consumer<Cart>(
+            builder: (ctx, cart, ch) => Badge(
+              value: cart.itemsCount.toString(),
+              child: ch!,
+            ),
+            child: IconButton(
+              icon: const Icon(Icons.shopping_cart),
+              onPressed: () {},
+            ),
+          ),
         ],
         title: const Text('shop app'),
       ),
-      body:  ProductsGreed(isShowFavorites: isShowFavorites),
+      body: ProductsGreed(isShowFavorites: isShowFavorites),
     );
   }
 }

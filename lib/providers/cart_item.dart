@@ -5,4 +5,9 @@ class CartItem with ChangeNotifier {
   late int quantity = 0;
 
   CartItem(this.id);
+
+  void addQuantity(int i) {
+    quantity += i;
+    notifyListeners();
+  }
 }
