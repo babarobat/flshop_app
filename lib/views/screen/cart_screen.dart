@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/ext/build_context_extensions.dart';
 import 'package:shop_app/providers/cart.dart';
+import 'package:shop_app/views/widget/cart_item.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -10,14 +11,14 @@ class CartScreen extends StatelessWidget {
     final cart = context.getProvidedAndForget<Cart>();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cart'),
+        title: const Text('Cart'),
       ),
       body: Column(
         children: [
           Card(
-            margin: EdgeInsets.all(15),
+            margin: const EdgeInsets.all(15),
             child: Padding(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -43,7 +44,20 @@ class CartScreen extends StatelessWidget {
                 ],
               ),
             ),
-          )
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+            child: ListView.builder(
+              itemCount: cart.items.length,
+              itemBuilder: (ctx,i) => CartItem(
+                id: cart.items[i].id,
+                title: cart.items[i].title,
+                price:  cart.items[i].price,
+                imageUrl: cart.items[i].imageUrl,
+                quantity:  cart.items[i].quantity,
+              ),
+            ),
+          ),
         ],
       ),
     );

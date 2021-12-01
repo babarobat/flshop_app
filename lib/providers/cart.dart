@@ -2,17 +2,25 @@ import 'package:flutter/material.dart';
 
 import 'cart_item.dart';
 
-class Cart with ChangeNotifier{
-  final Map<String,CartItem> _items = {};
+class Cart with ChangeNotifier {
+  final Map<String, CartItem> _items = {};
 
-  int get itemsCount =>_items.values
+  int get itemsCountWithQuantities => _items.values
       .fold(0, (int quantity, cartItem) => cartItem.quantity + quantity);
 
-  double get getTotal => _items.values.fold(0.0, (double total, cartItem) => cartItem.total + total);
+  double get getTotal => _items.values
+      .fold(0.0, (double total, cartItem) => cartItem.total + total);
 
-  void add(String productId, double price) {
-    if (!_items.containsKey(productId)){
-      _items[productId] = CartItem(productId, price);
+  List<CartItem> get items => _items.values.toList();
+
+  void add(String productId, String title, double price, String imageUrl) {
+    if (!_items.containsKey(productId)) {
+      _items[productId] = CartItem(
+        id: productId,
+        imageUrl: imageUrl,
+        title: title,
+        price: price,
+      );
     }
     _items[productId]!.addQuantity(1);
     notifyListeners();
