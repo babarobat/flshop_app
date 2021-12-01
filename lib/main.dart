@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/products.dart';
+import 'package:shop_app/views/screen/cart_screen.dart';
 import 'package:shop_app/views/screen/product_detail_screen.dart';
 
 import 'constants/routs.dart';
@@ -28,10 +29,11 @@ class MyApp extends StatelessWidget {
               .copyWith(secondary: Colors.deepOrange),
           fontFamily: 'Lato',
         ),
-        home: ProductsOverviewScreen(),
+        home: const ProductsOverviewScreen(),
         routes: {
-          Routs.productsOverview: (ctx) => ProductsOverviewScreen(),
+          Routs.productsOverview: (ctx) => const ProductsOverviewScreen(),
           Routs.productDetail: (ctx) => const ProductDetailScreen(),
+          Routs.cart: (ctx) => const CartScreen()
         },
       ),
     );

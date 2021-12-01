@@ -40,7 +40,7 @@ class ProductItem extends StatelessWidget {
             ),
             trailing: IconButton(
               icon: const Icon(Icons.shopping_cart),
-              onPressed: () => {cart.add(product.id)},
+              onPressed: () => {cart.add(product.id, product.price)},
               color: Theme.of(context).colorScheme.secondary,
             ),
           ),
