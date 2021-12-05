@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/constants/routs.dart';
 import 'package:shop_app/providers/cart.dart';
+import 'package:shop_app/views/widget/app_drower.dart';
 import 'package:shop_app/views/widget/products_greed.dart';
 import 'package:shop_app/views/widget/badge.dart';
 
@@ -51,6 +52,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         ],
         title: const Text('shop app'),
       ),
+      drawer: const AppDrawer(),
       body: ProductsGreed(isShowFavorites: isShowFavorites),
     );
   }

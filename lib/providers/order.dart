@@ -1,9 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:shop_app/providers/order_entry.dart';
 
 class Order with ChangeNotifier {
-  final String productId;
+  final List<OrderEntry> _items = [];
 
-  Order({
-    required this.productId,
-  });
+  List<OrderEntry> get items => [..._items];
+
+  void add(OrderEntry order) {
+    _items.add(order);
+    notifyListeners();
+  }
 }

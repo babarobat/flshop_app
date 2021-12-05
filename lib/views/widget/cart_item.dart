@@ -46,18 +46,15 @@ class CartItem extends StatelessWidget {
           horizontal: 15,
           vertical: 4,
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(imageUrl),
-            ),
-            title: Text(title),
-            subtitle: Text(
-              'Total: \$${price * quantity}',
-            ),
-            trailing: Text('$price  x  $quantity'),
+        child: ListTile(
+          leading: CircleAvatar(
+            backgroundImage: NetworkImage(imageUrl),
           ),
+          title: Text(title),
+          subtitle: Text(
+            'Total: \$${price * quantity}',
+          ),
+          trailing: Text('$price  x  $quantity'),
         ),
       ),
     );
