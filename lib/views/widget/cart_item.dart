@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/ext/build_context_extensions.dart';
+import 'package:shop_app/providers/cart.dart';
 
 class CartItem extends StatelessWidget {
   final String id;
@@ -18,22 +20,44 @@ class CartItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(
-        horizontal: 15,
-        vertical: 4,
+    final cart = context.getProvidedAndForget<Cart>();
+    return Dismissible(
+      key: ValueKey(id),
+      background: Container(
+        color: Theme.of(context).errorColor,
+        child: const Icon(
+          Icons.delete,
+          color: Colors.white,
+          size: 40,
+        ),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        margin: const EdgeInsets.symmetric(
+          horizontal: 15,
+          vertical: 4,
+        ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: ListTile(
-          leading: CircleAvatar(
-            backgroundImage: NetworkImage(imageUrl),
+      direction: DismissDirection.endToStart,
+      onDismissed: (direction) {
+        cart.remove(id);
+      },
+      child: Card(
+        margin: const EdgeInsets.symmetric(
+          horizontal: 15,
+          vertical: 4,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(imageUrl),
+            ),
+            title: Text(title),
+            subtitle: Text(
+              'Total: \$${price * quantity}',
+            ),
+            trailing: Text('$price  x  $quantity'),
           ),
-          title: Text(title),
-          subtitle: Text(
-            'Total: \$${price*quantity}',
-          ),
-          trailing: Text('$price  x  $quantity'),
         ),
       ),
     );
