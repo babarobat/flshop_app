@@ -27,7 +27,10 @@ class Cart with ChangeNotifier {
   }
 
   void remove(String id) {
-    _items.remove(id);
+    _items[id]!.removeQuantity(1);
+    if (_items[id]!.quantity < 1) {
+      _items.remove(id);
+    }
     notifyListeners();
   }
 

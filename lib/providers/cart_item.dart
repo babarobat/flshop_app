@@ -16,4 +16,9 @@ class CartItem with ChangeNotifier {
     quantity += i;
     notifyListeners();
   }
+
+  void removeQuantity(int i) {
+    quantity -= i;
+    notifyListeners();
+  }
 }
