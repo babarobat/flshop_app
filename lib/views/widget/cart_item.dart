@@ -20,9 +20,9 @@ class CartItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cart = context.getProvidedAndForget<Cart>();
+    final cart = context.getProvided<Cart>();
     return Dismissible(
-      key: ValueKey(id),
+      key: ValueKey(UniqueKey()),
       background: Container(
         color: Theme.of(context).errorColor,
         child: const Icon(
@@ -38,8 +38,19 @@ class CartItem extends StatelessWidget {
         ),
       ),
       direction: DismissDirection.endToStart,
+      confirmDismiss: (direction) => showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('Are u shore?'),
+          content: Text('Do you wont to delete item?'),
+          actions: [
+            TextButton(onPressed: (){Navigator.of(context).pop(false);}, child: Text('No')),
+            TextButton(onPressed: (){Navigator.of(context).pop(true);}, child: Text('Yes')),
+          ],
+        ),
+      ),
       onDismissed: (direction) {
-        cart.remove(id);
+        cart.removeAll(id);
       },
       child: Card(
         margin: const EdgeInsets.symmetric(
