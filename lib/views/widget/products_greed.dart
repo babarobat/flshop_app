@@ -20,70 +20,103 @@ class ProductsGreed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Product> products = getProducts(context);
-    final cart = context.getProvidedAndForget<Cart>();
+    final cart = context.getProvided<Cart>();
     return MasonryGridView.count(
         itemCount: products.length,
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,
         crossAxisCount: 2,
-        itemBuilder: (BuildContext context, int i) {
-          var product = products[i];
+        itemBuilder: (BuildContext ctx, int i) {
           return ChangeNotifierProvider.value(
             value: products[i],
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: GestureDetector(
-                onTap: () => Navigator.pushNamed(
-                  context,
-                  Routs.productDetail,
-                  arguments: ProductDetailScreenDTO(product.id),
-                ),
-                child: Stack(
-                  alignment: Alignment.bottomCenter,
+            child: const ProductItemMasonry(),
+          );
+        });
+  }
+
+  /*GridView.builder(
+      itemCount: products.length,
+      padding: const EdgeInsets.all(10),
+      itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
+        value: products[i],
+        child: const ProductItem(),
+      ),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 3 / 2,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+      ),
+    );*/
+
+  List<Product> getProducts(BuildContext context) {
+    return isShowFavorites
+        ? context.getProvided<Products>().getFavorites()
+        : context.getProvided<Products>().getAll();
+  }
+}
+
+class ProductItemMasonry extends StatelessWidget {
+  const ProductItemMasonry({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final cart = context.getProvided<Cart>();
+    final product = context.getProvided<Product>();
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: GestureDetector(
+        onTap: () => Navigator.pushNamed(
+          context,
+          Routs.productDetail,
+          arguments: ProductDetailScreenDTO(product.id),
+        ),
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Image.network(product.imageUrl, fit: BoxFit.cover),
+            SizedBox(
+              child: DecoratedBox(
+                decoration: const BoxDecoration(color: Colors.black54),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-
-                    Image.network(product.imageUrl, fit: BoxFit.cover),
-                     SizedBox(
-                       child: DecoratedBox(
-                         decoration: BoxDecoration(color: Colors.black54),
-                         child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            IconButton(
-                                icon: Icon(product.isFavorite
-                                    ? Icons.favorite
-                                    : Icons.favorite_border),
-                                onPressed: product.toggleFavorite,
-                                color: Theme.of(context).colorScheme.secondary),
-                            Text(
-                              product.title,
-                              style: TextStyle(color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                            IconButton(
-                                icon: const Icon(Icons.shopping_cart),
-                                onPressed: () {
-                                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                    content: const Text("Add item to cart"),
-                                    action: SnackBarAction(
-                                      label: 'UNDO',
-                                      onPressed: () {
-                                        cart.remove(product.id);
-                                      },
-                                    ),
-                                  ));
-                                  cart.add(product.id, product.title, product.price,
-                                      product.imageUrl);
-                                },
-                                color: Theme.of(context).colorScheme.secondary)
-                          ],
+                    IconButton(
+                        icon: Icon(product.isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_border),
+                        onPressed: product.toggleFavorite,
+                        color: Theme.of(context).colorScheme.secondary),
+                    Text(
+                      product.title,
+                      style: const TextStyle(color: Colors.white),
+                      textAlign: TextAlign.center,
                     ),
-                       ),
-                     )
+                    IconButton(
+                        icon: const Icon(Icons.shopping_cart),
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: const Text("Add item to cart"),
+                            action: SnackBarAction(
+                              label: 'UNDO',
+                              onPressed: () {
+                                cart.remove(product.id);
+                              },
+                            ),
+                          ));
+                          cart.add(product.id, product.title, product.price,
+                              product.imageUrl);
+                        },
+                        color: Theme.of(context).colorScheme.secondary),
                   ],
+                ),
+              ),
+            ),
+          ],
 
-                  /*footer: GridTileBar(
+          /*footer: GridTileBar(
                     backgroundColor: Colors.black87,
                     leading: IconButton(
                         icon: Icon(product.isFavorite
@@ -112,31 +145,8 @@ class ProductsGreed extends StatelessWidget {
                               product.imageUrl);
                         },
                         color: Theme.of(context).colorScheme.secondary),*/
-                ),
-              ),
-            ),
-          );
-        });
-  }
-
-  /*GridView.builder(
-      itemCount: products.length,
-      padding: const EdgeInsets.all(10),
-      itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
-        value: products[i],
-        child: const ProductItem(),
+        ),
       ),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 3 / 2,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-      ),
-    );*/
-
-  List<Product> getProducts(BuildContext context) {
-    return isShowFavorites
-        ? context.getProvided<Products>().getFavorites()
-        : context.getProvided<Products>().getAll();
+    );
   }
 }
