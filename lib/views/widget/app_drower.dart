@@ -13,23 +13,31 @@ class AppDrawer extends StatelessWidget {
             title: const Text('welcome!'),
             automaticallyImplyLeading: false,
           ),
+          const DrawerButton(Icons.shop, 'shop', Routs.productsOverview),
           const Divider(),
-           ListTile(
-            leading: Icon(Icons.shop),
-            title: Text('shop'),
-            onTap: (){
-              Navigator.pushNamed(context, Routs.productsOverview);
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.payment),
-            title: Text('orders'),
-            onTap: (){
-              Navigator.pushNamed(context, Routs.orders);
-            },
-          ),
+          const DrawerButton(Icons.payment, 'orders', Routs.orders),
+          const Divider(),
+          const DrawerButton(Icons.edit, 'manage products', Routs.userProducts),
+          const Divider(),
         ],
       ),
     );
+  }
+}
+
+class DrawerButton extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String route;
+
+  const DrawerButton(this.icon, this.title, this.route, {Key? key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+        leading: Icon(icon),
+        title: Text(title),
+        onTap: () => Navigator.pushNamed(context, route));
   }
 }
