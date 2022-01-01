@@ -4,4 +4,5 @@ class Routs {
   static const String cart = 'route/cart';
   static const String orders = 'route/orders';
   static const String userProducts = 'route/user-products';
+  static const String editProductsScreen = 'route/edit-products';
 }
