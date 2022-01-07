@@ -20,7 +20,6 @@ class ProductsGreed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Product> products = getProducts(context);
-    final cart = context.getProvided<Cart>();
     return MasonryGridView.count(
         itemCount: products.length,
         mainAxisSpacing: 10,
@@ -75,7 +74,12 @@ class ProductItemMasonry extends StatelessWidget {
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: [
-            Image.network(product.imageUrl, fit: BoxFit.cover),
+            product.imageUrl.isNotEmpty
+                ? Image.network(product.imageUrl, fit: BoxFit.cover)
+                : const Icon(
+                    Icons.image,
+                    size: 150,
+                  ),
             SizedBox(
               child: DecoratedBox(
                 decoration: const BoxDecoration(color: Colors.black54),

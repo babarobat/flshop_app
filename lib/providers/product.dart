@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Product with ChangeNotifier{
+class Product with ChangeNotifier {
   final String id;
   final String title;
   final String description;
@@ -14,6 +14,7 @@ class Product with ChangeNotifier{
     required this.description,
     required this.price,
     required this.imageUrl,
+    this.isFavorite = false,
   });
 
   void toggleFavorite() {
@@ -21,12 +22,24 @@ class Product with ChangeNotifier{
     notifyListeners();
   }
 
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'title': title,
+      'description': description,
+      'price': price,
+      'image_url': imageUrl,
+      'is_favorite': isFavorite,
+    };
+  }
 
-  Map<String, dynamic> toJson() => {
-    'title': title,
-    'description': description,
-    'price': price,
-    'image_url': imageUrl,
-    'is_favorite': isFavorite,
-  };
+  static Product fromJson(Map<String, dynamic> data, String id) {
+    return Product(
+      id: id,
+      title: data['title']??'',
+      description: data['description']??'',
+      price: data['price']??0,
+      imageUrl: data['image_url']??'',
+      isFavorite: data['isFavorite']??false,
+    );
+  }
 }

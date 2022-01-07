@@ -20,10 +20,13 @@ class ProductDetailScreen extends StatelessWidget {
           children: [
             SizedBox(
               width: MediaQuery.of(context).size.width,
-              child: Image.network(
+              child:
+              product.imageUrl.isNotEmpty?
+              Image.network(
                 product.imageUrl,
                 fit: BoxFit.cover,
-              ),
+              ):
+              const Icon(Icons.image, size: 200,),
             ),
             const SizedBox(height: 10),
             Text('\$${product.price}'),

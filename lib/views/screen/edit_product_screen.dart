@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shop_app/ext/build_context_extensions.dart';
 import 'package:shop_app/providers/product.dart';
@@ -103,6 +102,21 @@ class _EditProductScreenState extends State<EditProductScreen> {
         _isLoading = false;
         Navigator.of(context).pop();
       });
+    }).catchError((e) {
+      showDialog(
+        context: context,
+        builder: (c) => AlertDialog(
+          title: const Text('error!'),
+          content: const Text('error occurred'),
+          actions: [
+            TextButton(
+              onPressed: () {},
+              child: const Text('ok'),
+            ),
+          ],
+        ),
+      );
+      Navigator.of(context).pop();
     });
   }
 
