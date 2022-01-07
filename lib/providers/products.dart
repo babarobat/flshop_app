@@ -103,7 +103,7 @@ class FirebaseDatabase with DatabaseApi {
     var uri = Uri.https(_domain, _databaseId);
     var body = json.encode(product.toJson());
 
-    return post(uri, body: body);
+    return post(uri, body: body).catchError((error) => print(error));
   }
 }
 
