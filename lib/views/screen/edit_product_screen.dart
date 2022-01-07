@@ -19,12 +19,45 @@ class _EditProductScreenState extends State<EditProductScreen> {
   var _price = 0.0;
   var _description = '';
   var _imageUrl = '';
+  var _id = '';
+
+  var _isInit = false;
 
   @override
   void initState() {
     _imageUrlController.addListener(_onImageUrlUpdate);
 
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_isInit) {
+      _isInit = true;
+
+      var args = ModalRoute.of(context)!.settings.arguments;
+
+      if (args is EditProductScreenArgs) {
+        var id = args.id;
+
+        if (id.isNotEmpty) {
+          var products = context.getProvidedAndForget<Products>();
+          var product = products.getById(id);
+
+          if (product != null) {
+            _id = product.id;
+            _title = product.title;
+            _description = product.description;
+            _price = product.price;
+            _imageUrl = product.imageUrl;
+
+            _imageUrlController.text = _imageUrl;
+          }
+        }
+      }
+    }
   }
 
   @override
@@ -41,16 +74,21 @@ class _EditProductScreenState extends State<EditProductScreen> {
   void _save() {
     _formKey.currentState?.save();
 
-    if(!_fullEmpty){
+    if (!_fullEmpty) {
       var products = context.getProvidedAndForget<Products>();
-
-      products.add(Product(
-        id: DateTime.now().toString(),
+      var newProduct = Product(
+        id: _id.isEmpty ? DateTime.now().toString() : _id,
         title: _title,
         description: _description,
         price: _price,
         imageUrl: _imageUrl,
-      ));
+      );
+
+      if(_id.isEmpty){
+        products.add(newProduct);
+      }else {
+        products.update(_id, newProduct);
+      }
     }
 
     Navigator.of(context).pop();
@@ -105,11 +143,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
             child: Column(
               children: [
                 TextFormField(
+                  initialValue: _title,
                   decoration: const InputDecoration(labelText: 'Title'),
                   textInputAction: TextInputAction.next,
                   onSaved: _setTitle,
                 ),
                 TextFormField(
+                  initialValue: _price.toString(),
                   decoration: const InputDecoration(labelText: 'Price'),
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
@@ -117,6 +157,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   onSaved: _setPrice,
                 ),
                 TextFormField(
+                  initialValue: _description,
                   decoration: const InputDecoration(labelText: 'Description'),
                   maxLines: 3,
                   keyboardType: TextInputType.multiline,
@@ -127,27 +168,22 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Container(
-                        width: 100,
-                        height: 100,
-                        margin: const EdgeInsets.only(
-                          top: 8,
-                          right: 10,
-                        ),
+                      Expanded(
+                        flex: 1,
                         child: Container(
-                          child: _isUrlValid(_imageUrlController.text)
-                              ? FittedBox(
-                                  fit: BoxFit.cover,
-                                  child:
-                                      Image.network(_imageUrlController.text),
-                                )
-                              : const FittedBox(
-                                  fit: BoxFit.cover,
-                                  child: Icon(Icons.image),
-                                ),
+                          margin: const EdgeInsets.only(
+                            top: 8,
+                            right: 10,
+                          ),
+                          child: Container(
+                            child: _isUrlValid(_imageUrlController.text)
+                                ? Image.network(_imageUrlController.text)
+                                : const Icon(Icons.image, size: 100,),
+                          ),
                         ),
                       ),
                       Expanded(
+                        flex: 2,
                         child: TextFormField(
                           decoration:
                               const InputDecoration(labelText: 'Image Url'),
@@ -183,5 +219,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   bool _isUrlValid(String? value) => _validateUrl(value) == null;
-  bool get _fullEmpty => _title.isEmpty && _description.isEmpty && _imageUrl.isEmpty;
+
+  bool get _fullEmpty =>
+      _title.isEmpty && _description.isEmpty && _imageUrl.isEmpty;
+}
+
+class EditProductScreenArgs {
+  String id;
+
+  EditProductScreenArgs({this.id = ''});
 }

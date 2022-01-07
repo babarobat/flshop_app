@@ -45,12 +45,25 @@ class Products with ChangeNotifier {
   List<Product> getFavorites() =>
       _items.where((element) => element.isFavorite).toList();
 
-  Product getById(String id) {
-    return _items.firstWhere((x) => x.id == id);
+  Product? getById(String id) {
+    if (_items.any((element) => element.id == id)) {
+      return _items.firstWhere((x) => x.id == id);
+    }
+    return null;
   }
 
   void add(Product product) {
     _items.add(product);
+    notifyListeners();
+  }
+
+  void update(String id, Product newProduct) {
+    var index = _items.indexWhere((x) => x.id == id);
+    if (index < 0) {
+      throw Exception('Cant update element. Wrong index');
+    }
+
+    _items[index] = newProduct;
     notifyListeners();
   }
 }

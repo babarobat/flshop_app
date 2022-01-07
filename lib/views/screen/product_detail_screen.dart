@@ -9,7 +9,7 @@ class ProductDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final id = context.getArgument<ProductDetailScreenDTO>().id;
-    final product = context.getProvidedAndForget<Products>().getById(id);
+    final product = context.getProvidedAndForget<Products>().getById(id)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(product.title),

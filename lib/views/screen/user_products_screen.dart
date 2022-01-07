@@ -33,6 +33,7 @@ class UserProductScreen extends StatelessWidget {
           itemBuilder: (BuildContext ctx, int i) {
             final product = all[i];
             return UserProductItem(
+              id: product.id,
               title: product.title,
               imageUrl: product.imageUrl,
             );
