@@ -29,7 +29,9 @@ class Products with ChangeNotifier {
 
     _items.clear();
 
-    decoded.forEach((id, data) { _items.add(Product.fromJson(data,id));});
+    decoded.forEach((id, data) {
+      _items.add(Product.fromJson(data, id));
+    });
 
     notifyListeners();
   }
@@ -51,50 +53,55 @@ class Products with ChangeNotifier {
     notifyListeners();
   }
 
-  void update(String id, Product newProduct) {
-    var index = _items.indexWhere((x) => x.id == id);
+  Future update(Product product) async{
+    var index = _items.indexWhere((x) => x.id == product.id);
     if (index < 0) {
       throw Exception('Cant update element. Wrong index');
     }
 
-    _items[index] = newProduct;
+    await _databaseApi.update(product);
+    _items[index] = product;
     notifyListeners();
   }
 
   void delete(String id) {
     _items.removeWhere((element) => element.id == id);
-
     notifyListeners();
   }
 }
 
 class FirebaseDatabase with DatabaseApi {
   static const String _domain =
-      'https://flutter-shop-app-f9f78-default-rtdb.europe-west1.firebasedatabase.app/products.json';
+      'https://flutter-shop-app-f9f78-default-rtdb.europe-west1.firebasedatabase.app';
+  static const String _products = '/products';
+  static const String _definition = '.json';
 
   @override
   Future<Response> add(Product product) {
-    var uri = Uri.parse(_domain);
-
+    var uri = Uri.parse(_domain + _products + _definition);
     var map = product.toJson();
-
     var body = json.encode(map);
-
     return post(uri, body: body).catchError((error) => print(error));
   }
 
   @override
   Future<Response> fetch() {
-    var uri = Uri.parse(_domain);
-
+    var uri = Uri.parse(_domain + _products + _definition);
     return get(uri).catchError((error) => print(error));
+  }
+
+  @override
+  Future<Response> update(Product product) {
+    var uri = Uri.parse(_domain + _products + '/${product.id}' + _definition);
+    var map = product.toJson();
+    var body = json.encode(map);
+    return patch(uri, body: body).catchError((error) => print(error));
   }
 }
 
 abstract class DatabaseApi {
   Future<Response> add(Product product);
-
   Future<Response> fetch();
-//void update();
+  Future<Response> update(Product product);
 //void delete();
 }

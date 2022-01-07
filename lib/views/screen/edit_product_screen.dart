@@ -71,53 +71,46 @@ class _EditProductScreenState extends State<EditProductScreen> {
     setState(() {});
   }
 
-  void _save() {
+  void _save() async{
     _formKey.currentState?.save();
 
     if (!_fullEmpty) {
+      setState(() {_isLoading = true;});
+
       var products = context.getProvidedAndForget<Products>();
       var newProduct = Product(
-        id: _id.isEmpty ? DateTime.now().toString() : _id,
+        id: _id,
         title: _title,
         description: _description,
         price: _price,
         imageUrl: _imageUrl,
       );
 
-      if (_id.isEmpty) {
-        _addProduct(products, newProduct);
-      } else {
-        products.update(_id, newProduct);
-        Navigator.of(context).pop();
+      try{
+        if (_id.isEmpty) {
+          await products.add(newProduct);
+        } else {
+          await products.update(newProduct);
+        }
+      }catch(e){
+        showDialog(
+          context: context,
+          builder: (c) => AlertDialog(
+            title: const Text('error!'),
+            content: const Text('error occurred'),
+            actions: [
+              TextButton(
+                onPressed: () {Navigator.of(context).pop();},
+                child: const Text('ok'),
+              ),
+            ],
+          ),
+        );
       }
-    }
-  }
+      setState(() {_isLoading = true;});
 
-  void _addProduct(Products products, Product newProduct) {
-    setState(() {
-      _isLoading = true;
-    });
-    products.add(newProduct).then((value) {
-      setState(() {
-        _isLoading = false;
-        Navigator.of(context).pop();
-      });
-    }).catchError((e) {
-      showDialog(
-        context: context,
-        builder: (c) => AlertDialog(
-          title: const Text('error!'),
-          content: const Text('error occurred'),
-          actions: [
-            TextButton(
-              onPressed: () {},
-              child: const Text('ok'),
-            ),
-          ],
-        ),
-      );
       Navigator.of(context).pop();
-    });
+    }
   }
 
   void _setTitle(String? value) {
