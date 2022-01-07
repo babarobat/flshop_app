@@ -53,7 +53,10 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         title: const Text('shop app'),
       ),
       drawer: const AppDrawer(),
-      body: ProductsGreed(isShowFavorites: isShowFavorites),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ProductsGreed(isShowFavorites: isShowFavorites),
+      ),
     );
   }
 }
