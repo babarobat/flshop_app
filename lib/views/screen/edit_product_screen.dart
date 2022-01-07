@@ -22,6 +22,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   var _id = '';
 
   var _isInit = false;
+  var _isLoading = false;
 
   @override
   void initState() {
@@ -84,14 +85,25 @@ class _EditProductScreenState extends State<EditProductScreen> {
         imageUrl: _imageUrl,
       );
 
-      if(_id.isEmpty){
-        products.add(newProduct);
-      }else {
+      if (_id.isEmpty) {
+        _addProduct(products, newProduct);
+      } else {
         products.update(_id, newProduct);
+        Navigator.of(context).pop();
       }
     }
+  }
 
-    Navigator.of(context).pop();
+  void _addProduct(Products products, Product newProduct) {
+    setState(() {
+      _isLoading = true;
+    });
+    products.add(newProduct).then((value) {
+      setState(() {
+        _isLoading = false;
+        Navigator.of(context).pop();
+      });
+    });
   }
 
   void _setTitle(String? value) {
@@ -135,74 +147,84 @@ class _EditProductScreenState extends State<EditProductScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                TextFormField(
-                  initialValue: _title,
-                  decoration: const InputDecoration(labelText: 'Title'),
-                  textInputAction: TextInputAction.next,
-                  onSaved: _setTitle,
-                ),
-                TextFormField(
-                  initialValue: _price.toString(),
-                  decoration: const InputDecoration(labelText: 'Price'),
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  textInputAction: TextInputAction.next,
-                  onSaved: _setPrice,
-                ),
-                TextFormField(
-                  initialValue: _description,
-                  decoration: const InputDecoration(labelText: 'Description'),
-                  maxLines: 3,
-                  keyboardType: TextInputType.multiline,
-                  onSaved: _setDescription,
-                ),
-                Container(
-                  padding: const EdgeInsets.all(5),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(
+              color: Colors.red,
+            ))
+          : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Form(
+                key: _formKey,
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                          margin: const EdgeInsets.only(
-                            top: 8,
-                            right: 10,
-                          ),
-                          child: Container(
-                            child: _isUrlValid(_imageUrlController.text)
-                                ? Image.network(_imageUrlController.text)
-                                : const Icon(Icons.image, size: 100,),
-                          ),
-                        ),
+                      TextFormField(
+                        initialValue: _title,
+                        decoration: const InputDecoration(labelText: 'Title'),
+                        textInputAction: TextInputAction.next,
+                        onSaved: _setTitle,
                       ),
-                      Expanded(
-                        flex: 2,
-                        child: TextFormField(
-                          decoration:
-                              const InputDecoration(labelText: 'Image Url'),
-                          keyboardType: TextInputType.url,
-                          textInputAction: TextInputAction.done,
-                          controller: _imageUrlController,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: _validateUrl,
-                          onSaved: _setImageUrl,
+                      TextFormField(
+                        initialValue: _price.toString(),
+                        decoration: const InputDecoration(labelText: 'Price'),
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true),
+                        textInputAction: TextInputAction.next,
+                        onSaved: _setPrice,
+                      ),
+                      TextFormField(
+                        initialValue: _description,
+                        decoration:
+                            const InputDecoration(labelText: 'Description'),
+                        maxLines: 3,
+                        keyboardType: TextInputType.multiline,
+                        onSaved: _setDescription,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(5),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                margin: const EdgeInsets.only(
+                                  top: 8,
+                                  right: 10,
+                                ),
+                                child: Container(
+                                  child: _isUrlValid(_imageUrlController.text)
+                                      ? Image.network(_imageUrlController.text)
+                                      : const Icon(
+                                          Icons.image,
+                                          size: 100,
+                                        ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: TextFormField(
+                                decoration: const InputDecoration(
+                                    labelText: 'Image Url'),
+                                keyboardType: TextInputType.url,
+                                textInputAction: TextInputAction.done,
+                                controller: _imageUrlController,
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                validator: _validateUrl,
+                                onSaved: _setImageUrl,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 

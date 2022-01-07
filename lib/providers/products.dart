@@ -57,8 +57,8 @@ class Products with ChangeNotifier {
     return null;
   }
 
-  void add(Product product) {
-    _databaseApi.add(product, (r) => {_onAddResponse(product, r)});
+  Future add(Product product) {
+    return _databaseApi.add(product).then((response) => _onAddResponse(product, response));
   }
 
   void update(String id, Product newProduct) {
@@ -99,16 +99,16 @@ class FirebaseDatabase with DatabaseApi {
   static const String _databaseId = '/products.json';
 
   @override
-  void add(Product product, Function(Response) onResponse) {
+  Future<Response> add(Product product) {
     var uri = Uri.https(_domain, _databaseId);
     var body = json.encode(product.toJson());
 
-    post(uri, body: body).then(onResponse);
+    return post(uri, body: body);
   }
 }
 
 abstract class DatabaseApi {
-  void add(Product product, Function(Response) onResponse);
+  Future<Response> add(Product product);
 //void update();
 //void delete();
 }
