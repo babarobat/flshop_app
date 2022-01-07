@@ -10,7 +10,8 @@ class UserProductScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final products = context.getProvided<Products>().getAll();
+    final products = context.getProvided<Products>();
+    var all = products.getAll();
 
     return Scaffold(
       drawer: const AppDrawer(),
@@ -28,9 +29,9 @@ class UserProductScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: ListView.builder(
-          itemCount: products.length,
+          itemCount: all.length,
           itemBuilder: (BuildContext ctx, int i) {
-            final product = products[i];
+            final product = all[i];
             return UserProductItem(
               title: product.title,
               imageUrl: product.imageUrl,
