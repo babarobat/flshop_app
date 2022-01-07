@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
 import 'product.dart';
 
@@ -38,6 +41,8 @@ class Products with ChangeNotifier {
     ),
   ];
 
+  final DatabaseApi _databaseApi = FirebaseDatabase();
+
   int get count => _items.length;
 
   List<Product> getAll() => [..._items];
@@ -53,8 +58,7 @@ class Products with ChangeNotifier {
   }
 
   void add(Product product) {
-    _items.add(product);
-    notifyListeners();
+    _databaseApi.add(product, (r) => {_onAddResponse(product, r)});
   }
 
   void update(String id, Product newProduct) {
@@ -72,4 +76,39 @@ class Products with ChangeNotifier {
 
     notifyListeners();
   }
+
+  void _onAddResponse(Product product, Response response) {
+    var id = json.decode(response.body)['name'];
+
+    var newProduct = Product(
+      id: id,
+      title: product.title,
+      price: product.price,
+      description: product.description,
+      imageUrl: product.imageUrl,
+    );
+
+    _items.add(newProduct);
+    notifyListeners();
+  }
+}
+
+class FirebaseDatabase with DatabaseApi {
+  static const String _domain =
+      'flutter-shop-app-f9f78-default-rtdb.europe-west1.firebasedatabase.app';
+  static const String _databaseId = '/products.json';
+
+  @override
+  void add(Product product, Function(Response) onResponse) {
+    var uri = Uri.https(_domain, _databaseId);
+    var body = json.encode(product.toJson());
+
+    post(uri, body: body).then(onResponse);
+  }
+}
+
+abstract class DatabaseApi {
+  void add(Product product, Function(Response) onResponse);
+//void update();
+//void delete();
 }
