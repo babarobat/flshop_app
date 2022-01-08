@@ -21,9 +21,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    var db = FirebaseDatabase();
+
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (c) => Products()),
+        ChangeNotifierProvider(create: (c) => Products(db)),
         ChangeNotifierProvider(create: (c) => Order()),
         ChangeNotifierProvider(create: (c) => Cart()),
       ],

@@ -47,7 +47,6 @@ class ProductItemMasonry extends StatelessWidget {
   Widget build(BuildContext context) {
     final cart = context.getProvided<Cart>();
     final product = context.getProvided<Product>();
-    final products = context.getProvidedAndForget<Products>();
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
@@ -79,7 +78,6 @@ class ProductItemMasonry extends StatelessWidget {
                             : Icons.favorite_border),
                         onPressed: ()  {
                         product.toggleFavorite();
-                        products.update(product);//hack
                     },
                         color: Theme
                             .of(context)
