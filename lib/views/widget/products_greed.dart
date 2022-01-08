@@ -33,21 +33,6 @@ class ProductsGreed extends StatelessWidget {
         });
   }
 
-  /*GridView.builder(
-      itemCount: products.length,
-      padding: const EdgeInsets.all(10),
-      itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
-        value: products[i],
-        child: const ProductItem(),
-      ),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 3 / 2,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-      ),
-    );*/
-
   List<Product> getProducts(BuildContext context) {
     return isShowFavorites
         ? context.getProvided<Products>().getFavorites()
@@ -119,36 +104,6 @@ class ProductItemMasonry extends StatelessWidget {
               ),
             ),
           ],
-
-          /*footer: GridTileBar(
-                    backgroundColor: Colors.black87,
-                    leading: IconButton(
-                        icon: Icon(product.isFavorite
-                            ? Icons.favorite
-                            : Icons.favorite_border),
-                        onPressed: product.toggleFavorite,
-                        color: Theme.of(context).colorScheme.secondary),
-                    title: Text(
-                      product.title,
-                      textAlign: TextAlign.center,
-                    ),
-                    trailing: IconButton(
-                        icon: const Icon(Icons.shopping_cart),
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: const Text("Add item to cart"),
-                            action: SnackBarAction(
-                              label: 'UNDO',
-                              onPressed: () {
-                                cart.remove(product.id);
-                              },
-                            ),
-                          ));
-                          cart.add(product.id, product.title, product.price,
-                              product.imageUrl);
-                        },
-                        color: Theme.of(context).colorScheme.secondary),*/
         ),
       ),
     );

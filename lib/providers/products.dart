@@ -102,7 +102,7 @@ class FirebaseDatabase with DatabaseApi {
 
   @override
   Future<http.Response> delete(String id) {
-    var uri = Uri.parse(_domain + _products + '/${id}' + _definition);
+    var uri = Uri.parse(_domain + _products + '/$id' + _definition);
     return http.delete(uri).catchError((error) => print(error));
   }
 }
