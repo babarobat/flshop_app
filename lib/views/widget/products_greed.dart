@@ -47,24 +47,26 @@ class ProductItemMasonry extends StatelessWidget {
   Widget build(BuildContext context) {
     final cart = context.getProvided<Cart>();
     final product = context.getProvided<Product>();
+    final products = context.getProvidedAndForget<Products>();
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GestureDetector(
-        onTap: () => Navigator.pushNamed(
-          context,
-          Routs.productDetail,
-          arguments: ProductDetailScreenDTO(product.id),
-        ),
+        onTap: () =>
+            Navigator.pushNamed(
+              context,
+              Routs.productDetail,
+              arguments: ProductDetailScreenDTO(product.id),
+            ),
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: [
             product.imageUrl.isNotEmpty
                 ? Image.network(product.imageUrl, fit: BoxFit.cover)
                 : const Icon(
-                    Icons.image,
-                    size: 150,
-                  ),
+              Icons.image,
+              size: 150,
+            ),
             SizedBox(
               child: DecoratedBox(
                 decoration: const BoxDecoration(color: Colors.black54),
@@ -75,8 +77,14 @@ class ProductItemMasonry extends StatelessWidget {
                         icon: Icon(product.isFavorite
                             ? Icons.favorite
                             : Icons.favorite_border),
-                        onPressed: product.toggleFavorite,
-                        color: Theme.of(context).colorScheme.secondary),
+                        onPressed: ()  {
+                        product.toggleFavorite();
+                        products.update(product);//hack
+                    },
+                        color: Theme
+                            .of(context)
+                            .colorScheme
+                            .secondary),
                     Text(
                       product.title,
                       style: const TextStyle(color: Colors.white),
@@ -98,7 +106,10 @@ class ProductItemMasonry extends StatelessWidget {
                           cart.add(product.id, product.title, product.price,
                               product.imageUrl);
                         },
-                        color: Theme.of(context).colorScheme.secondary),
+                        color: Theme
+                            .of(context)
+                            .colorScheme
+                            .secondary),
                   ],
                 ),
               ),

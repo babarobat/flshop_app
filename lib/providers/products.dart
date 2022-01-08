@@ -47,6 +47,7 @@ class Products with ChangeNotifier {
       price: product.price,
       description: product.description,
       imageUrl: product.imageUrl,
+      isFavorite: product.isFavorite,
     );
 
     _items.add(newProduct);
@@ -55,9 +56,6 @@ class Products with ChangeNotifier {
 
   Future update(Product product) async{
     var index = _items.indexWhere((x) => x.id == product.id);
-    if (index < 0) {
-      throw Exception('Cant update element. Wrong index');
-    }
 
     await _databaseApi.update(product);
     _items[index] = product;
