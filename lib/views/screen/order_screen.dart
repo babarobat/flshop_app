@@ -20,13 +20,16 @@ class _OrderScreenState extends State<OrderScreen> {
     super.didChangeDependencies();
 
     if (_isInit) {
-      _isInit = false;
-
       try {
         setState(() {_isLoading = true;});
 
         var orders = context.getProvidedAndForget<Orders>();
         await orders.fetch();
+
+        setState(() {
+          _isInit = false;
+          _isLoading = false;
+        });
 
       } catch (e) {
         setState(() {_isLoading = false;});
@@ -43,7 +46,9 @@ class _OrderScreenState extends State<OrderScreen> {
         title: const Text('Orders'),
       ),
       drawer: const AppDrawer(),
-      body: ListView.builder(
+      body: _isLoading?
+      const Center(child: CircularProgressIndicator(color: Colors.red,),):
+      ListView.builder(
         itemCount: orders.items.length,
         itemBuilder: (ctx, i) => OrderItem(entry: orders.items[i]),
       ),
