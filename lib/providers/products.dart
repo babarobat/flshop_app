@@ -3,13 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'order.dart';
 import 'product.dart';
 
 class Products with ChangeNotifier {
   final List<Product> _items = [];
   late DatabaseApi _databaseApi;
 
-  Products(DatabaseApi db){
+  Products(DatabaseApi db) {
     _databaseApi = db;
   }
 
@@ -43,7 +44,7 @@ class Products with ChangeNotifier {
   }
 
   Future add(Product product) async {
-    var response = await _databaseApi.add(product);
+    var response = await _databaseApi.addProduct(product);
 
     var id = json.decode(response.body)['name'];
 
@@ -86,16 +87,17 @@ class FirebaseDatabase with DatabaseApi {
   static const String _domain =
       'https://flutter-shop-app-f9f78-default-rtdb.europe-west1.firebasedatabase.app';
   static const String _products = '/products';
+  static const String _orders = '/orders';
   static const String _definition = '.json';
 
   @override
-  Future<http.Response> add(Product product) async{
+  Future<http.Response> addProduct(Product product) async {
     var uri = Uri.parse(_domain + _products + _definition);
     var map = product.toJson();
     var body = json.encode(map);
 
     try {
-      var response = await  http.post(uri, body: body);
+      var response = await http.post(uri, body: body);
       if (response.statusCode >= 400) {
         throw HttpException(response.statusCode, 'http exception');
       }
@@ -151,16 +153,52 @@ class FirebaseDatabase with DatabaseApi {
       rethrow;
     }
   }
+
+  @override
+  Future<http.Response> addOrder(Order order) async {
+    var uri = Uri.parse(_domain + _orders + _definition);
+    var map = order.toJson();
+    var body = json.encode(map);
+
+    try {
+      var response = await http.post(uri, body: body);
+      if (response.statusCode >= 400) {
+        throw HttpException(response.statusCode, 'http exception');
+      }
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<http.Response> fetchOrders() async{
+    var uri = Uri.parse(_domain + _orders + _definition);
+
+    try {
+      var response = await http.get(uri);
+      if (response.statusCode >= 400) {
+        throw HttpException(response.statusCode, 'http exception');
+      }
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
 
 abstract class DatabaseApi {
-  Future<http.Response> add(Product product);
+  Future<http.Response> addProduct(Product product);
 
   Future<http.Response> fetch();
 
   Future<http.Response> update(Product product);
 
   Future<http.Response> delete(String id);
+
+  Future<http.Response> addOrder(Order order);
+
+  Future<http.Response> fetchOrders();
 }
 
 class HttpException implements Exception {

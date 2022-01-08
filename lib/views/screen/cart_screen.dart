@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shop_app/constants/routs.dart';
 import 'package:shop_app/ext/build_context_extensions.dart';
 import 'package:shop_app/providers/cart.dart';
+import 'package:shop_app/providers/orders.dart';
 import 'package:shop_app/providers/order.dart';
-import 'package:shop_app/providers/order_entry.dart';
 import 'package:shop_app/views/widget/cart_item.dart';
 
 class CartScreen extends StatelessWidget {
@@ -40,21 +40,7 @@ class CartScreen extends StatelessWidget {
                                 .color),
                       ),
                       backgroundColor: Theme.of(context).colorScheme.primary),
-                  TextButton(
-                    onPressed: () {
-                      final ordersProvider =
-                          context.getProvidedAndForget<Order>();
-                      final order = OrderEntry(
-                        date: DateTime.now(),
-                        total: cart.getTotal,
-                        items: cart.items,
-                      );
-                      ordersProvider.add(order);
-                      cart.clear();
-                      Navigator.pushNamed(context, Routs.orders);
-                    },
-                    child: const Text('order'),
-                  )
+                  const OrderButton(),
                 ],
               ),
             ),
@@ -75,5 +61,48 @@ class CartScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  const OrderButton({Key? key}) : super(key: key);
+
+  @override
+  _OrderButtonState createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  var _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final cart = context.getProvided<Cart>();
+    final orders = context.getProvidedAndForget<Orders>();
+
+    return _isLoading
+        ? const Center(child: CircularProgressIndicator(color: Colors.red))
+        : TextButton(onPressed: (_isLoading || cart.items.isEmpty)
+                ? null
+                : () => _order(cart, orders),
+            child: const Text('order'),
+          );
+  }
+
+  void _order(Cart cart, Orders orders) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final order = Order(
+      id: DateTime.now().toString(),
+      date: DateTime.now(),
+      total: cart.getTotal,
+      items: cart.items,
+    );
+
+    await orders.add(order);
+
+    cart.clear();
+    Navigator.pushNamed(context, Routs.orders);
   }
 }

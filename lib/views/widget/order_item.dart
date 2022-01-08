@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:shop_app/providers/order_entry.dart';
+import 'package:shop_app/providers/order.dart';
 
 class OrderItem extends StatefulWidget {
-  final OrderEntry entry;
+  final Order entry;
 
   const OrderItem({
     Key? key,
@@ -23,7 +23,7 @@ class _OrderItemState extends State<OrderItem> {
         children: [
           ListTile(
             title: Text('\$${widget.entry.total}'),
-            subtitle: Text('\$${widget.entry.date}'),
+            subtitle: Text('${widget.entry.date}'),
             trailing: IconButton(
               icon: const Icon(Icons.expand_more),
               onPressed: () {
@@ -38,7 +38,7 @@ class _OrderItemState extends State<OrderItem> {
               children: widget.entry.items
                   .map(
                     (e) => Container(
-                      padding: EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(4),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
